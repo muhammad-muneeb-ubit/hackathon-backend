@@ -1,12 +1,11 @@
 import express from "express";
-import { generateStockReport } from "../controller/report.js";
-import { authMiddleware, authorizeRoles } from "../midddleware/auth.js";
+import { protect } from "../midddleware/auth.js";
+import { analyzeMedicalReport } from "../controller/report.js";
+
 
 const reportRouter = express.Router();
 
-reportRouter.use(authMiddleware);
-reportRouter.use(authorizeRoles("admin"));
-
-reportRouter.get("/report/stock", generateStockReport);
+reportRouter.use(protect);
+reportRouter.post("/image", analyzeMedicalReport);
 
 export default reportRouter;

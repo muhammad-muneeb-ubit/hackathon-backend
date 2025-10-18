@@ -2,10 +2,12 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
-import productRouter from "./route/product.js";
 import { createDefaultAdmin } from "./config/createAdmin.js";
 import authRouter from "./route/auth.js";
 import userRouter from "./route/user.js";
+import fileRouter from "./route/file.js";
+import vitalRouter from "./route/vital.js";
+import geminiRoutes from "./route/geminiRoutes.js";
 import reportRouter from "./route/report.js";
 
 dotenv.config();
@@ -24,11 +26,12 @@ app.get("/", (req, res) => {
 });
 
 createDefaultAdmin();
-app.use("/api/product", productRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-app.use("/api", reportRouter);
-
+app.use("/api/file", fileRouter);
+app.use("/api/vital", vitalRouter);
+app.use("/api/gemini", geminiRoutes);
+app.use("/api/report", reportRouter);
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;

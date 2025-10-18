@@ -9,12 +9,11 @@ import {
   rejectRequest,
   updateUserProfile,
 } from "../controller/user.js";
-import { authMiddleware, authorizeRoles } from "../midddleware/auth.js";
+import { protect } from "../midddleware/auth.js";
 
 const userRouter = express.Router();
 
-userRouter.use(authMiddleware);
-userRouter.use(authorizeRoles("admin")); // only admin can access
+userRouter.use(protect) // only admin can access
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/single/:id", getSingleUser);

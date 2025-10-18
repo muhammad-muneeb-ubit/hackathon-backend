@@ -10,9 +10,16 @@ export const signUp = async (req, res) => {
     if (!body.name || !body.email || !body.email.includes("@") || !body.password)
       return res.json({
         status: false,
-        message: "All fields are required, and email must be valid and password should be of minimum 6 characters",
+        message: "All fields are required, and email must be valid and password should be provided",
         user: null,
       });
+    if (body.password.length < 6) {
+      return res.json({
+        status: false,
+        message: "Password must be at least 6 characters",
+        user: null,
+      });
+    }
     const { name, password, email } = body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -26,15 +33,15 @@ export const signUp = async (req, res) => {
     const newbody = { ...body, password: hashPassword };
     const user = await User.create(newbody);
 
-    await sendEmail({
-      to: process.env.ADMIN_EMAIL, 
-      subject: "🔔 New User created - Approval Needed",
-      html: newUserSignupTemplate(user),
-    });
+    // await sendEmail({
+    //   to: process.env.ADMIN_EMAIL, 
+    //   subject: "🔔 New User created - Approval Needed",
+    //   html: newUserSignupTemplate(user),
+    // });
 
     res.status(201).json({
       status: true,
-      message: "Signup successful. Waiting for admin approval.",
+      message: "Signup successful...",
       user: user,
     });
   } catch (error) {
@@ -64,9 +71,11 @@ export const login = async (req, res) => {
       });
     }
 
+   
+
     const PRIVATE_KEY = process.env.JWTPRIVATE_KEY;
     const token = jwt.sign(
-      { id: user._id, role: user.role, status: user.status },
+      { id: user._id,  },
       PRIVATE_KEY,{ expiresIn: "1d" }
     );
     res.json({
